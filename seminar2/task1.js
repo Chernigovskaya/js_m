@@ -19,57 +19,47 @@
 */
 
 class BankAccount {
-    /**
-     *
-     * @type {number}
-     */
-    #balance = 0;
-    get balance() {
-      return this.#balance;
-    }
-  
-    /**
-     *   * @param {number} value
-     */
-    deposit(value) {
-      this.#validate(value);
-      this.#balance += value;
-    }
-    withDraw(value) {
-      this.#validate(value);
-      if (this.#balance - value < 0) {
-        throw new Error(`${value} can't be taken from this account`)
-      }
-      this.#balance -= value;
-    }
-  
-    #validate(value) {
-      if (!Number.isFinite(value)){
-        throw new TypeError(`${value} must be finite number`)
-      }
-      if (value < 0) {
-        throw new RangeError(`${value} must be greater than 0`)
-      }
-      if ((value * 100) !== Math.trunc(value * 100)) {
-        throw new Error(`${value} must be 2 digits after point`)
-      }
-      return true;
-    }
+  /**
+   *
+   * @type {number}
+   */
+  // приватное свойство для хранения баланса
+  #balance = 0;
+  // геттер  для получения балвнса
+  get balance() {
+    return this.#balance;
   }
-  
-  const account = new BankAccount();
-  
-  try {
-    account.deposit(1000);
-    account.deposit(-1000);
-  } catch (e) {
-    console.log(e)
+
+  /**
+   *   * @param {number} value
+   * метод для внесения денег
+   */
+  deposit(value) {
+    if (value < 0) throw new Error("нет денег");
+    this.#balance += value;
+    return this.#balance;
   }
-  
-  try {
-    account.withDraw(500);
-  } catch (e) {
-    console.log(e)
+
+  //снятие денег
+  withDraw(value) {
+    if (this.#balance - value < 0) {
+      throw new Error(`${value} can't be taken from this account`);
+    }
+    this.#balance -= value;
+    return this.#balance;
   }
-  
-  console.log(account.balance)
+
+  constructor(initialBalans) {
+    if (initialBalans < 0) throw new Error("нет возможности открыть");
+    this.#balance = initialBalans;
+
+  }
+
+}
+
+const account = new BankAccount(500);
+account.deposit(700);
+account.withDraw(200)
+
+
+console.log(account.balance);
